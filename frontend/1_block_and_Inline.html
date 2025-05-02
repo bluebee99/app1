@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>block表示とinline表示 のテスト</title>
+  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"> -->
+</head>
+<body>
+
+  <h1>ブロック要素とインライン要素</h1>
+
+  <h3 class="tag-group-name">block要素</h3>
+  
+  <div>div</div>
+  <p>p</p>
+  <h4>h4</h4>
+  <header>header</header>
+  <main>main</main>
+  <footer>footer</footer>
+
+  <h3 class="tag-group-name" id="xxx">inline要素</h3>
+
+  <span>span</span>
+  <a href="#xxx">anker</a>
+  <input type="text" value="text"></input>
+  <input type="button" value="button"></input>
+  <img src="img.png" width="50">
+
+</body>
+
+<style>
+
+  .tag-group-name {
+    padding:10px;
+    background-color: darkblue;
+    color:white;
+  }
+
+  div,p,h4,header,main,footer{
+    background-color:lightgray;
+    margin-bottom: 15px;
+  }
+
+  span,a,input,img {
+    background-color:lightgray;
+    margin-right: 10px;
+  }
+
+  input[type="text"] {
+    background-color: white;
+  }
+</style>
+
+</html>

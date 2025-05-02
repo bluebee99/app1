@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>CSS Flexbox のテスト</title>
+  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"> -->
+</head>
+<body>
+
+  <h1>フレックスボックスレイアウト</h1>
+  <p>div要素は通常、画面の横幅一杯に広がって縦に並ぶが、display: flex を指定することで横並びにできる。昔は横並びにするために float などの指定を駆使していたが、flex が登場した事でとても簡単に横並びができるようになった。</p>
+
+  <div class="container">
+    <div class="absolute-item">div</div>
+    <div class="item">Item</div>
+    <div class="item">Item</div>
+    <div class="item">Item</div>
+    <div class="item">Item</div>
+  </div>
+
+  <div class="container flex">
+    <div class="absolute-item">div ( display:flex )"</div>
+    <div class="item">Item</div>
+    <div class="item">Item</div>
+    <div class="item">Item</div>
+    <div class="item">Item</div>
+  </div>
+
+  <div class="container flex justify-content-center">
+    <div class="absolute-item">div ( display:flex / justify-content:center )</div>
+    <div class="item">Item</div>
+    <div class="item">Item</div>
+    <div class="item">Item</div>
+    <div class="item">Item</div>
+  </div>
+
+  <div class="container flex justify-content-right">
+    <div class="absolute-item">div ( display:flex / justify-content:right )</div>
+    <div class="item">Item</div>
+    <div class="item">Item</div>
+    <div class="item">Item</div>
+    <div class="item">Item</div>
+  </div>
+
+  <div class="container flex justify-content-space-between">
+    <div class="absolute-item">div ( display:flex / justify-content:space-between )</div>
+    <div class="item">Item</div>
+    <div class="item">Item</div>
+    <div class="item">Item</div>
+    <div class="item">Item</div>
+  </div>
+
+</body>
+
+<style>
+
+  .container {
+    margin: 10px;
+    border-style: solid;
+    border-width:1px;
+    border-color: gray;
+    background-color:antiquewhite;
+  }
+
+  .flex { /*実験用*/
+    display: flex;
+  }
+
+  .justify-content-center { /*実験用*/
+    justify-content: center;
+  }
+
+  .justify-content-right { /*実験用*/
+    justify-content: right;
+  }
+
+  .justify-content-space-between { /*実験用*/
+    justify-content: space-between;
+  }
+
+  /* .inline-flex {
+    display: inline-flex;
+  } */
+
+  /* .direction-row {
+    flex-direction: row;
+  } */
+
+  /* .direction-column {
+    flex-direction: column;
+  } */
+
+  .item {
+    margin:30px 10px 10px 10px; /*TOP RIGHT BOTTOM LEFT*/
+    padding: 10px;
+    color: white;
+    background-color:#0bd;
+  }
+
+  .absolute-item {
+    margin: 5px;
+    position: absolute;
+  }
+
+</style>
+
+</html>

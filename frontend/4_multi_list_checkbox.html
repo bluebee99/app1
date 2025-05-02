@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>複数チェックボックス（Font Awesome）</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+
+  <ul class="simple-list">
+    <li>
+      <label class="checkbox-label">
+        <input type="checkbox" class="checkbox">
+        <i class="fa-regular fa-square"></i>
+        <i class="fa-solid fa-square-check"></i>
+        りんご
+      </label>
+    </li>
+
+    <li>
+      <label class="checkbox-label">
+        <input type="checkbox" class="checkbox">
+        <i class="fa-regular fa-square"></i>
+        <i class="fa-solid fa-square-check"></i>
+        みかん
+      </label>
+    </li>
+
+    <li>
+      <label class="checkbox-label">
+        <input type="checkbox" class="checkbox">
+        <i class="fa-regular fa-square"></i>
+        <i class="fa-solid fa-square-check"></i>
+        バナナ
+      </label>
+    </li>
+  </ul>
+
+
+
+  <style>
+    .simple-list {
+      list-style: none;
+      padding-left: 0px;
+    }
+
+    .checkbox {
+      display: none;
+    }
+
+    .checkbox-label {
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .checkbox ~ .fa-square-check {
+      display: none;
+    }
+
+    .checkbox:checked ~ .fa-square {
+      display: none;
+    }
+
+    .checkbox:checked ~ .fa-square-check {
+      display: inline;
+      color: blue;
+    }
+  </style>
+
+</body>
+</html>
