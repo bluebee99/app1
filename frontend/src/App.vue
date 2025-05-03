@@ -31,16 +31,20 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
 
-  import { ref } from 'vue';
-  const todos = ref([
-    { id: 1, no: 1, text: '要件定義の完了条件を合意する', done: true},
-    { id: 2, no: 2, text: '要件定義レビューの日程を決定する', done: true},
-    { id: 3, no: 3, text: '要件定義工程の検収条件を再確認する', done: false},
-    { id: 4, no: 4, text: '要件定義工程の完了確認会議を実施し、検収手続に進むよう依頼する', done: false},
-  ]);
-  const newTodo = ref('');
+const todos = ref([]);
+const newTodo = ref('');
 
+onMounted(async () => {
+  try {
+    const response = await axios.get('http://localhost:3001/api/todos');
+    todos.value = response.data;
+  } catch (error) {
+    console.error('Failed to fetch todos:', error);
+  }
+});
 </script>
 
 <style scoped>
