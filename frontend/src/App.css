@@ -71,11 +71,6 @@ div.task-input-section button {
 
 /**************** 完了済の表示選択チェックボックス欄 ****************/
 
-.aaa {
-  display: flex;
-  justify-content: flex-end;
-}
-
 .filter-section {
   display: flex;
   justify-content: flex-end;
@@ -159,6 +154,11 @@ label.checkbox-label {
 .hidden-checkbox:checked ~ .fa-square-check {
   display: inline;
   color: rgb(32,32,32);
+}
+
+.fa-trash:hover {
+  color: crimson;
+  transform: scale(1.1);
 }
 
 /**************** モーダル ****************/

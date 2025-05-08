@@ -31,7 +31,7 @@
           <span class="todo-text">{{ todo.text }}</span>
         </label>
         <i class="icon fa-solid fa-pen" @click="openEditModal(todo)"></i>
-        <i class="icon fa-solid fa-trash"></i>
+        <i class="icon fa-solid fa-trash" @click="deleteTodo(todo.id)"></i>
       </li>
   
     </ul>
@@ -113,7 +113,7 @@
     fetchTodos();
   });
 
-  // 新規タスク追加処理
+  // INSERT 新規タスク追加処理
   const addTodo = async () => {
     const trimmedText = newTodo.value.trim();
     if (trimmedText === '') return;
@@ -129,7 +129,7 @@
     }
   };
 
-  // タスク更新（text）
+  // UPDATE タスク更新（text）
   const updateTodo = async () => {
     try {
       await axios.put(`http://localhost:3001/api/todos/${editedTodo.value.id}`, {
@@ -142,7 +142,7 @@
     }  
   };  
 
-  //タスク更新（doneフラグ）
+  // UPDATE タスク更新（doneフラグ）
   const updateCheckedTodos = async () => {
     const updatedTodos = todos.value.filter(todo => {
       const original = todosOriginal.value.find(o => o.id === todo.id);
@@ -164,6 +164,18 @@
 
     } catch (err) {
       console.error('更新失敗', err);
+    }
+  };
+
+  // DELETE タスク削除処理
+  const deleteTodo = async (id) => {
+    if (!confirm('本当に削除しますか？')) return;
+
+    try {
+      await axios.delete(`http://localhost:3001/api/todos/${id}`);
+      await fetchTodos(); // 削除後に一覧を更新
+    } catch (error) {
+      console.error('削除エラー:', error);
     }
   };
 
