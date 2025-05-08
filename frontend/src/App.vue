@@ -2,178 +2,171 @@
   <header>TODOアプリ</header>
 
   <main>
+
+    <!------------ タスク入力エリア ------------>
     <div class="task-input-section">
-      <input type="text" placeholder="タスクを入力してください。"/>
-      <button>追加</button>
+      <input type="text" v-model="newTodo" placeholder="タスクを入力してください。"/>
+      <button @click="addTodo">追加</button>
     </div>
 
+    <!------------ 完了タスクの表示切替 ------------>
+    <div class="filter-section">
+      <label class="checkbox-label">
+        <input type="checkbox" v-model="showCompleted" @change="filterVisibleTodos" class="hidden-checkbox"/>
+        <i class="icon fa-regular fa-square"></i>
+        <i class="icon fa-solid fa-square-check"></i>
+        <span>完了済タスクを表示する</span>
+      </label>
+    </div>
+
+    <!------------ タスクリストエリア ------------>
     <ul class="todo-list">
 
-      <li v-for="todo in todos" :key="todo.id" class="todo-item">
-        <label class="checkbox-label">
-          <input type="checkbox" v-model="todo.done" class="checkbox">
-          <i class="fa-regular fa-square"></i>
-          <i class="fa-solid fa-square-check"></i>
+      <li v-for="todo in visibleTodos" :key="todo.id" class="todo-item">
+        <label class="checkbox-label flex-extend-1">
+          <input type="checkbox" v-model="todo.done" class="hidden-checkbox">
+          <i class="icon fa-regular fa-square"></i>
+          <i class="icon fa-solid fa-square-check"></i>
+          <span class="todo-no">{{ todo.no }}</span>
           <span class="todo-text">{{ todo.text }}</span>
         </label>
-        <i class="icon fa-solid fa-pen"></i>
+        <i class="icon fa-solid fa-pen" @click="openEditModal(todo)"></i>
         <i class="icon fa-solid fa-trash"></i>
       </li>
   
     </ul>
     
+    <!------------ 登録ボタンエリア ------------>
     <div class="submit-button-section">
-      <button>登録</button>
+      <button @click="updateCheckedTodos">登録</button>
     </div>
+
+    <!------------ タスク編集モーダルエリア ------------>
+    <div v-if="isEditModalOpen" class="modal-overlay">
+      <div class="modal">
+        <h3>タスク {{ editedTodo.no }} を編集</h3>
+        <textarea v-model="editedTodo.text" class="modal-textarea"></textarea>
+        <div class="modal-actions">
+          <button @click="updateTodo">更新</button>
+          <button @click="closeEditModal">キャンセル</button>
+        </div>
+      </div>
+    </div>
+
   </main>
 
-  <footer>copyright 2025 sampleTodo Inc.</footer>
+    <!------------ フッター ------------>
+    <footer>copyright 2025 sampleTodo Inc.</footer>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import axios from 'axios';
+  import { ref, onMounted, computed } from 'vue';
+  import axios from 'axios';
+  
+  const todos = ref([]);
+  const visibleTodos = ref([]); // 表示専用のリスト
+  const todosOriginal = ref([]); // doneフラグの変更検知のため更新前データを保持
+  const newTodo = ref(''); //新規追加用のtodo
+  const showCompleted = ref(false); // 完了タスクを表示するかどうか
 
-const todos = ref([]);
-const newTodo = ref('');
+  const isEditModalOpen = ref(false); //タスク編集用モーダルの表示スイッチ
+  const editedTodo = ref({ id: null, no: null, text: '', done: false }); //タスク編集用の修正後タスクデータ保持
+  
+  // 編集モーダルを開く
+  const openEditModal = (todo) => {
+    editedTodo.value = { ...todo }; //スプレッド構文
+    isEditModalOpen.value = true;
+  };
+  
+  // 編集モーダルを閉じる
+  const closeEditModal = () => {
+    isEditModalOpen.value = false;
+    editedTodo.value = { id: null, no: null, text: '', done: false };
+  };
 
-onMounted(async () => {
-  try {
-    const response = await axios.get('http://localhost:3001/api/todos');
-    todos.value = response.data;
-  } catch (error) {
-    console.error('Failed to fetch todos:', error);
-  }
-});
+  // 完了タスクの切り替え
+  const toggleCompleted = () => {
+    showCompleted.value = !showCompleted.value;
+    filterVisibleTodos();
+  };
+
+  const filterVisibleTodos = () => {
+    visibleTodos.value = todos.value.filter(todo => {
+      return showCompleted.value || !todo.done;
+    });
+  };
+
+  // タスク全件を取得（初期表示や再表示時に呼び出される）
+  const fetchTodos = async () => {
+    try {
+      const response = await axios.get('http://localhost:3001/api/todos');
+      todos.value = response.data;
+      todosOriginal.value = JSON.parse(JSON.stringify(response.data)); // ディープコピー
+      filterVisibleTodos();
+    } catch (error) {
+      console.error('Failed to fetch todos:', error);
+    }
+  };
+
+  // 初期表示
+  onMounted(() => {
+    fetchTodos();
+  });
+
+  // 新規タスク追加処理
+  const addTodo = async () => {
+    const trimmedText = newTodo.value.trim();
+    if (trimmedText === '') return;
+    
+    try {
+      await axios.post('http://localhost:3001/api/todos', {
+        text: trimmedText
+      });
+      newTodo.value = '';
+      await fetchTodos(); // 一覧を再取得して更新
+    } catch (error) {
+      console.error('登録エラー:', error);
+    }
+  };
+
+  // タスク更新（text）
+  const updateTodo = async () => {
+    try {
+      await axios.put(`http://localhost:3001/api/todos/${editedTodo.value.id}`, {
+        text: editedTodo.value.text,
+      });  
+      closeEditModal();
+      await fetchTodos(); // 一覧を再取得して更新
+    } catch (err) {
+      console.error('更新失敗', err);
+    }  
+  };  
+
+  //タスク更新（doneフラグ）
+  const updateCheckedTodos = async () => {
+    const updatedTodos = todos.value.filter(todo => {
+      const original = todosOriginal.value.find(o => o.id === todo.id);
+      return original && todo.done !== original.done;
+    });
+    
+    try {
+      for (const todo of updatedTodos) {
+        await axios.put(`http://localhost:3001/api/todos/${todo.id}/done`, {
+          done: todo.done
+        });
+      }
+
+      alert('更新完了');
+      // await fetchTodos(); // 一覧を再取得して更新
+
+      filterVisibleTodos();
+      todosOriginal.value = JSON.parse(JSON.stringify(todos.value)); // original も更新
+
+    } catch (err) {
+      console.error('更新失敗', err);
+    }
+  };
+
 </script>
 
-<style scoped>
-  main {
-    width: 500px;
-    margin: 0 auto; /*中央揃え width指定必須*/
-  }
-
-  header, footer {
-    background-color: #AFB;
-  }
-
-  header {
-    display: flex;
-    position:sticky;
-    top:0;
-    align-items: center;
-    height: 42px;
-    padding: 3px 25px;
-    margin-bottom: 16px;
-    font-size: 28px;
-    font-weight: bold;
-  }
-
-  footer {
-    display: flex;
-    position:sticky;
-    bottom:0;
-    align-items: center;
-    justify-content: center;
-    height: 42px;
-    margin-top: 16px;
-    font-size: 14px;
-    font-weight: bold;
-  }
-
-  button {
-    font-size: 18px;
-    color: white;
-    background-color: rgb(134,223,255);
-    border: none;
-    padding:6px 20px;
-    width: 120px;
-    border-radius: 20px;
-    cursor: pointer;
-  }
-
-  button:active {
-    box-shadow: inset 3px 3px 6px rgba(0,0,0,0.3);
-    background-color:rgb(114,200,230);
-  }
-
-  /**************** タスク入力欄 ****************/
-  div.task-input-section {
-    display: flex;
-    margin-bottom: 20px;
-  }
-
-  div.task-input-section input[type="text"] {
-    flex:1;
-    font-size: 15px;
-    padding-left: 10px;
-    background-color: rgb(240,240,240);
-    border: none;
-  }
-
-  div.task-input-section button {
-    margin-left: 20px;
-  }
-  
-  /**************** タスクリスト欄 ****************/
-  ul.todo-list {
-      list-style: none;
-      padding-left: 0px;
-  }
-  
-  li.todo-item {
-    display: flex;
-    gap: 20px;
-    background-color:rgb(240,240,240);
-    padding: 15px;
-    margin-bottom: 15px;
-    border-radius: 8px;
-  }
-
-  label.checkbox-label {
-    display: flex;
-    flex: 1;
-    overflow: hidden;
-  }
-
-  span.todo-text{
-    display: inline-block;
-    font-size: 18px;
-    margin-left: 5px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  li.todo-item i {
-    font-size: 28px;
-  }
-
-  input.checkbox {
-    display: none;
-  }
-
-  label.checkbox-label {
-    cursor: pointer;
-  }
-
-  .checkbox ~ .fa-square-check {
-    display: none;
-  }
-
-  .checkbox:checked ~ .fa-square {
-    display: none;
-  }
-
-  .checkbox:checked ~ .fa-square-check {
-    display: inline;
-    color: rgb(32,32,32);
-  }
-
-  /**************** 登録ボタン欄 ****************/
-  div.submit-button-section {
-    display: flex;
-    justify-content: center;
-  }
-
-</style>
+<style src="./App.css" scoped />
