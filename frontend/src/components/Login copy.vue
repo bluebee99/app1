@@ -1,0 +1,178 @@
+<template>
+  <div>
+    <header>TODOアプリ</header>
+
+    <main>
+      <div class="login-text">ログイン</div>
+
+      <div class="external-auth-section">
+        <a href="#" class="icon-container">
+          <i class="fab fa-google"></i>
+          <span>Google</span>
+        </a>
+
+        <a href="#" class="icon-container">
+          <i class="fab fa-slack"></i>
+          <span>Slack</span>
+        </a>
+
+        <a href="#" class="icon-container">
+          <i class="fab fa-github"></i>
+          <span>GitHub</span>
+        </a>
+      </div>
+
+      <div class="password-auth-section">
+        <div class="label-text">メールアドレスまたは ID</div>
+        <input type="text" v-model="userId" placeholder="mail@example.com   or   ID" />
+        <div class="label-text">パスワード</div>
+        <input type="password" v-model="password" />
+        <a href="#" class="password-reset-link">パスワードを忘れた方</a>
+        <button class="login-button" @click="handleLogin">ログイン</button>
+      </div>
+
+      <div class="sign-up-section">
+        <a href="#" class="sign-up-link" @click.prevent="navigateToSignup">新規登録</a>
+      </div>
+    </main>
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+
+const userId = ref('')
+const password = ref('')
+
+const handleLogin = async () => {
+  const res = await fetch('/api/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify({
+      user_id: userId.value,
+      password: password.value,
+    }),
+  })
+
+  if (res.ok) {
+    window.navigateTo('ToDo')
+  } else {
+    alert('ログインに失敗しました')
+  }
+}
+
+const navigateToSignup = () => {
+  window.navigateTo('Signup')
+}
+</script>
+
+<style scoped>
+
+    body {
+      color: rgb(90,90,90);
+      background-color:rgb(250,250,250);
+    }
+
+    header {
+      color: rgb(50,50,50);
+      background-color: rgb(0,196,204);
+      display: flex;
+      position:sticky;
+      top:0;
+      align-items: center;
+      height: 42px;
+      padding: 3px 25px;
+      margin-bottom: 16px;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 450px;
+      margin: 0 auto; /*中央揃え width指定必須*/
+      padding: 80px 40px;
+    }
+
+    .login-text {
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    .external-auth-section,
+    .password-auth-section,
+    .sign-up-section {
+      background-color:white;
+      border: 1px solid rgb(200,200,200);
+      width: 100%;
+      padding: 30px;
+    }
+
+    .external-auth-section {
+      display: flex;
+      gap: 20px;
+      justify-content: space-evenly;
+    }
+
+    /*********** メールアドレス＆パスワード認証 ***********/
+
+    .label-text {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .password-auth-section input {
+      width: 100%;
+      height: 40px;
+      padding: 10px;
+      margin-bottom: 20px;
+      font-size: 16px;
+    }
+
+    .password-reset-link,
+    .sign-up-link {
+      display: flex;
+      justify-content: center;
+      color: rgb(90,90,90);
+    }
+
+    .password-reset-link {
+      margin-bottom: 25px;
+    }
+
+    .password-reset-link:hover {
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    }
+
+    .login-button {
+      display: block;
+      /* margin: 0 auto; */
+      margin: 10px auto;
+      width: 100%;
+      padding: 10px;
+    }
+
+    .icon-container .fab:hover,
+    .icon-container span:hover {
+      color: rgb(0,196,204);
+    }
+
+    a.icon-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-decoration: none;
+      color:rgb(60,60,60);
+    }
+
+    .fab {
+      font-size:32px;
+      margin: 10px;
+    }
+
+</style>

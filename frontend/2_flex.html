@@ -18,7 +18,7 @@
     <div class="item">Item</div>
   </div>
 
-  <div class="container flex">
+  <div class="container display-flex">
     <div class="absolute-item">div ( display:flex )"</div>
     <div class="item">Item</div>
     <div class="item">Item</div>
@@ -26,7 +26,7 @@
     <div class="item">Item</div>
   </div>
 
-  <div class="container flex justify-content-center">
+  <div class="container display-flex justify-content-center">
     <div class="absolute-item">div ( display:flex / justify-content:center )</div>
     <div class="item">Item</div>
     <div class="item">Item</div>
@@ -34,15 +34,15 @@
     <div class="item">Item</div>
   </div>
 
-  <div class="container flex justify-content-right">
-    <div class="absolute-item">div ( display:flex / justify-content:right )</div>
+  <div class="container display-flex justify-content-end">
+    <div class="absolute-item">div ( display:flex / justify-content:end )</div>
     <div class="item">Item</div>
     <div class="item">Item</div>
     <div class="item">Item</div>
     <div class="item">Item</div>
   </div>
 
-  <div class="container flex justify-content-space-between">
+  <div class="container display-flex justify-content-space-between">
     <div class="absolute-item">div ( display:flex / justify-content:space-between )</div>
     <div class="item">Item</div>
     <div class="item">Item</div>
@@ -62,21 +62,24 @@
     background-color:antiquewhite;
   }
 
-  .flex { /*実験用*/
-    display: flex;
-  }
+  /*********** 親要素に指定する flex CSS ***********/
+  .display-flex { display: flex; }
+  .flex-direction { flex-direction:column; }
 
-  .justify-content-center { /*実験用*/
-    justify-content: center;
-  }
-
-  .justify-content-right { /*実験用*/
-    justify-content: right;
-  }
-
-  .justify-content-space-between { /*実験用*/
-    justify-content: space-between;
-  }
+  /*----- 水平方向の揃え -----*/
+  .justify-content-start  { justify-content:start; }
+  .justify-content-center { justify-content:center; }
+  .justify-content-end    { justify-content:end; }
+  .justify-content-space-between { justify-content:space-between; }
+  .justify-content-space-around { justify-content:space-around; }
+  .justify-content-space-evenly { justify-content:space-evenly; }
+  .align-items-start  { align-items:start; }
+  .align-items-center { align-items:center; }
+  .align-items-end    { align-items:end; }
+  .align-items-center { align-items:center; }
+  .align-items-center { align-items:center; }
+  .align-items-center { align-items:center; }
+  .align-items-center { align-items:center; }
 
   /* .inline-flex {
     display: inline-flex;
@@ -91,7 +94,7 @@
   } */
 
   .item {
-    margin:30px 10px 10px 10px; /*TOP RIGHT BOTTOM LEFT*/
+    margin: 40px 1px 5px 1px;
     padding: 10px;
     color: white;
     background-color:#0bd;
